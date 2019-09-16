@@ -157,40 +157,6 @@ class Generic{
     return $value;
   }
 
-  public function checkAccess( string $page ){
-    global $database, $session;
-    $errors = [];
-    // die( var_dump($session) );
-    if( !($database instanceof MySQLDatabase) ){
-      $this->errors["checkAccess"][] = [3,256,'There must be an instance of TymFrontiers\MySQLDatabase in the name of \'$database\' on global scope',__FILE__,__LINE__];
-      $this->errors['checkAccess'][] = [0,256,"Runtym config error, kindly contact admin/developer.",__FILE__,__LINE__];
-      return false;
-    } if( !($session instanceof Session) ){
-      $errors[] = [3,256,'There must be an instance of TymFrontiers\Session in the name of \'$session\' on global scope',__FILE__,__LINE__];
-      $this->errors['checkAccess'][] = [0,256,"Runtym config error, kindly contact admin/developer.",__FILE__,__LINE__];
-      return false;
-    } if( !$session->isLoggedIn() ){
-      $this->errors['checkAccess'][] = [0,256,"You must be logged in to proceed with request.",__FILE__,__LINE__];
-      // $this->errors['checkAccess'][] = [0,256,"Runtym config error, kindly contact admin/developer.",__FILE__,__LINE__];
-      return false;
-    } if( ! \defined('ADMIN_DB') ){
-      $this->errors['checkAccess'][] = [3,256,"ADMIN_DB (admin database name) not defined.",__FILE__,__LINE__];
-      $this->errors['checkAccess'][] = [0,256,"Runtym config error, kindly contact admin/developer.",__FILE__,__LINE__];
-      return false;
-    }
-    $page = $database->escapeValue($page);
-    $page_access = $database->fetchAssocArray($database->query("SELECT * FROM " . ADMIN_DB . ".page_access WHERE name='{$page}' LIMIT 1"));
-
-  	$page_access = $page_access ? $page_access : false;
-  	if( !$page_access ){
-  		$this->errors['checkAccess'][] = [0,256,"Undefined page access, contact admin.",__FILE__,__LINE__];
-  	}
-    $groups = \explode(',',$page_access['groups']);
-    if( !\in_array($session->user->ugroup,$groups) || $session->admin_rank < $page_access['min_rank']){
-      $this->errors['checkAccess'][] = [0,256,"Admin group/level/rank conflicts with page access group/rank, contact admin.",__FILE__,__LINE__];
-    }
-    return empty( $this->errors['checkAccess'] );
-  }
   public function checkCSRF( string $form, string $token ){
     global $session;
     $errors = [];
@@ -216,5 +182,19 @@ class Generic{
   public static function isBase64(string $data){
     return \preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data);
   }
-
+  public static function authErrors (API\Authentication $auth, string $message, string $errname, bool $override=true) {
+    $auth_errors = (new InstanceError ($auth,$override))->get($errname,true);
+    $out_errors = [
+      "Message" => $message
+    ];
+    $i=0;
+    if (!empty($auth_errors)) {
+      foreach ($auth_errors as $err) {
+        $out_errors["Error-{$i}"] = $err;
+        $i++;
+      }
+    }
+    $out_errors["Status"] = "1" . (\count($out_errors) - 1);
+    return $out_errors;
+  }
 }
