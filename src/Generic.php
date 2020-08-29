@@ -194,7 +194,7 @@ class Generic{
         $i++;
       }
     }
-    $out_errors["Status"] = "1" . (\count($out_errors) - 1);
+    $out_errors["Status"] = "1." . (\count($out_errors) - 1);
     return $out_errors;
   }
 }
