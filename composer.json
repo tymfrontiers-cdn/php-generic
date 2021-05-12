@@ -20,7 +20,6 @@
       }
   ],
   "require": {
-    "php" : ">=5.3",
     "tymfrontiers-cdn/php-instance-error" : ">=0.1@stable"
   },
   "require-dev": {},
