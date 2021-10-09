@@ -163,7 +163,7 @@ class Generic{
     if( !($session instanceof Session) ){
       $this->errors['checkCSRF'][] = [3,256,'There must be an instance of TymFrontiers\Session in the name of \'$session\' on global scope',__FILE__,__LINE__];
     }
-
+    if ($session->isLoggedIn()) return true; // no need to proceed checking
     if( @ !$sess_token = $_SESSION['CSRF_token'][$form] ){
       $this->errors['checkCSRF'][] = [0,256,"No request/form-matching security token in storage. \r\n This might be an unauthorized, or timed out request. \r\n You may reload web page and try again or contact admin if error persists.",__FILE__,__LINE__];
       return empty( $this->errors['checkCSRF'] );
