@@ -42,7 +42,7 @@ class Generic{
     $return = [ 'name'=>'','email'=>'' ];
 
     if( \strpos($string, '<') !== false && \strpos($string, '>') !== false ){
-      $name =  \filter_var($string,FILTER_SANITIZE_STRING);
+      $name =  \filter_var($string, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $email = \filter_var( \str_replace($name,'',$string),FILTER_SANITIZE_EMAIL);
       $return['name'] = !empty($name) ? $name : '';
       $return['email'] = \filter_var($email,FILTER_VALIDATE_EMAIL) ? $email : '';
