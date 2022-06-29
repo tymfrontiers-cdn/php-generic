@@ -41,9 +41,10 @@ class Generic{
   public static function splitEmailName(string $string){
     $return = [ 'name'=>'','email'=>'' ];
 
-    if( \strpos($string, '<') !== false && \strpos($string, '>') !== false ){
-      $name =  \filter_var($string, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-      $email = \filter_var( \str_replace($name,'',$string),FILTER_SANITIZE_EMAIL);
+    $splt = \explode("<", $string);
+    if( \count($splt) == 2 ){
+      $name =  \filter_var(\trim($splt[0]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $email = \filter_var( \trim(\str_replace(["<", ">"], "", $splt[1])), FILTER_SANITIZE_EMAIL);
       $return['name'] = !empty($name) ? $name : '';
       $return['email'] = \filter_var($email,FILTER_VALIDATE_EMAIL) ? $email : '';
     }else{
