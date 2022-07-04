@@ -15,8 +15,12 @@ class Generic{
     exit;
   }
   public static function setGet(string $url, array $param_val){
-    \parse_str( \parse_url($url, PHP_URL_QUERY), $query);
-    // var_dump($query);
+    $url_q = \parse_url($url, PHP_URL_QUERY);
+    if (!empty($url_q)) {
+      \parse_str($url_q, $query);
+    } else {
+      $query = [];
+    }
     foreach($param_val as $k=>$v){
       $query[$k] = $v;
     }
