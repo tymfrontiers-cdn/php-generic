@@ -43,13 +43,17 @@ class Generic{
     return $allowed;
   }
   public static function splitEmailName(string $string){
-    $return = [ 'name'=>'','email'=>'' ];
+    $return = [ 'name'=>'', 'surname' => '', 'email'=>'' ];
 
     $splt = \explode("<", $string);
     if( \count($splt) == 2 ){
       $name =  \filter_var(\trim($splt[0]), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $email = \filter_var( \trim(\str_replace(["<", ">"], "", $splt[1])), FILTER_SANITIZE_EMAIL);
-      $return['name'] = !empty($name) ? $name : '';
+      if (!empty($name)) {
+        $name = \preg_split('/\s+/', $name, 2);
+        $return['name'] = $name[0];
+        if (\count($name) > 1) $return['surname'] = $name[1];
+      }
       $return['email'] = \filter_var($email,FILTER_VALIDATE_EMAIL) ? $email : '';
     }else{
       $email = \filter_var($string,FILTER_SANITIZE_EMAIL);
