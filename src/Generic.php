@@ -51,8 +51,8 @@ class Generic{
       $email = \filter_var( \trim(\str_replace(["<", ">"], "", $splt[1])), FILTER_SANITIZE_EMAIL);
       if (!empty($name)) {
         $name = \preg_split('/\s+/', $name, 2);
-        $return['name'] = $name[0];
-        if (\count($name) > 1) $return['surname'] = $name[1];
+        $return['name'] = \str_replace(" ", "", \ucwords($name[0]));
+        if (\count($name) > 1) $return['surname'] = \str_replace(" ", "", \ucwords($name[1]));
       }
       $return['email'] = \filter_var($email,FILTER_VALIDATE_EMAIL) ? $email : '';
     }else{
