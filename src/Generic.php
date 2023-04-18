@@ -91,12 +91,12 @@ class Generic{
       if( $columns[$key][1] !== "boolean" ){
         if( empty($params[$key])  ){
           $req_errors ++;
-          $this->errors['requestParam'][] = [0,256,"[{$key}]: is required but not present with request.",__FILE__,__LINE__];
+          $this->errors['requestParam'][] = [0,256,"[{$columns[$key][0]}]: is required but not present with request.",__FILE__,__LINE__];
         }
       }else{
         if( $params[$key] == '' ){
           $req_errors ++;
-          $this->errors['requestParam'][] = [0,256,"[{$key}]: is required but not present with request.",__FILE__,__LINE__];
+          $this->errors['requestParam'][] = [0,256,"[{$columns[$key][0]}]: is required but not present with request.",__FILE__,__LINE__];
         }
       }
     }
